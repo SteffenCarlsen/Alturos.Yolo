@@ -1,4 +1,8 @@
-﻿using System.Drawing;
+﻿#region
+
+using System.Drawing;
+
+#endregion
 
 namespace Alturos.Yolo.Model
 {
@@ -13,7 +17,7 @@ namespace Alturos.Yolo.Model
 
         public Point Center()
         {
-            return new Point(this.X + this.Width / 2, this.Y + this.Height / 2);
+            return new Point(X + Width / 2, Y + Height / 2);
         }
     }
 }

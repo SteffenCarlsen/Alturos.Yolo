@@ -1,43 +1,47 @@
-﻿using Alturos.Yolo.Model;
+﻿#region
+
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using Alturos.Yolo.Model;
+
+#endregion
 
 namespace Alturos.Yolo
 {
     public class YoloTracking
     {
-        private readonly int _frameWidth;
         private readonly int _frameHeight;
+        private readonly int _frameWidth;
         private readonly Dictionary<string, YoloTrackingItemExtended> _trackingItems;
+        private int _nextObjectId;
 
         private int _processIndex;
-        private int _nextObjectId;
 
         public YoloTracking(int frameWidth, int frameHeight)
         {
-            this._frameWidth = frameWidth;
-            this._frameHeight = frameHeight;
-            this._trackingItems = new Dictionary<string, YoloTrackingItemExtended>();
+            _frameWidth = frameWidth;
+            _frameHeight = frameHeight;
+            _trackingItems = new Dictionary<string, YoloTrackingItemExtended>();
         }
 
         public void Reset()
         {
-            this._processIndex = 0;
-            this._trackingItems.Clear();
+            _processIndex = 0;
+            _trackingItems.Clear();
         }
 
         public IEnumerable<YoloTrackingItem> Analyse(IEnumerable<YoloItem> items)
         {
-            this._processIndex++;
+            _processIndex++;
 
-            if (this._trackingItems.Count == 0)
+            if (_trackingItems.Count == 0)
             {
                 foreach (var item in items)
                 {
-                    var trackingItem = new YoloTrackingItemExtended(item, this.GetObjectId());
-                    this._trackingItems.Add(trackingItem.ObjectId, trackingItem);
+                    var trackingItem = new YoloTrackingItemExtended(item, GetObjectId());
+                    _trackingItems.Add(trackingItem.ObjectId, trackingItem);
                 }
 
                 return new YoloTrackingItem[0];
@@ -47,24 +51,25 @@ namespace Alturos.Yolo
 
             foreach (var item in items)
             {
-                var bestMatch = this._trackingItems.Values.Select(o => new
-                {
-                    Item = o,
-                    DistancePercentage = this.DistancePercentage(o.Center(), item.Center()),
-                    SizeDifference = this.GetSizeDifferencePercentage(o, item)
-                })
-                .Where(o => !trackingItems.Select(x => x.ObjectId).Contains(o.Item.ObjectId) && o.DistancePercentage <= 15 && o.SizeDifference < 30)
-                .OrderBy(o => o.DistancePercentage)
-                .FirstOrDefault();
-
-                if (bestMatch == null || bestMatch.Item.ProcessIndex + 25 < this._processIndex)
-                {
-                    var trackingItem1 = new YoloTrackingItemExtended(item, this.GetObjectId())
+                var bestMatch = _trackingItems.Values.Select(o => new
                     {
-                        ProcessIndex = this._processIndex
+                        Item = o,
+                        DistancePercentage = DistancePercentage(o.Center(), item.Center()),
+                        SizeDifference = GetSizeDifferencePercentage(o, item)
+                    })
+                    .Where(o => !trackingItems.Select(x => x.ObjectId).Contains(o.Item.ObjectId) &&
+                                o.DistancePercentage <= 15 && o.SizeDifference < 30)
+                    .OrderBy(o => o.DistancePercentage)
+                    .FirstOrDefault();
+
+                if (bestMatch == null || bestMatch.Item.ProcessIndex + 25 < _processIndex)
+                {
+                    var trackingItem1 = new YoloTrackingItemExtended(item, GetObjectId())
+                    {
+                        ProcessIndex = _processIndex
                     };
 
-                    this._trackingItems.Add(trackingItem1.ObjectId, trackingItem1);
+                    _trackingItems.Add(trackingItem1.ObjectId, trackingItem1);
                     continue;
                 }
 
@@ -72,7 +77,7 @@ namespace Alturos.Yolo
                 bestMatch.Item.Y = item.Y;
                 bestMatch.Item.Width = item.Width;
                 bestMatch.Item.Height = item.Height;
-                bestMatch.Item.ProcessIndex = this._processIndex;
+                bestMatch.Item.ProcessIndex = _processIndex;
                 bestMatch.Item.IncreaseTrackingConfidence();
 
                 if (bestMatch.Item.TrackingConfidence >= 60)
@@ -82,7 +87,7 @@ namespace Alturos.Yolo
                 }
             }
 
-            var itemsWithoutHits = this._trackingItems.Values.Where(o => o.ProcessIndex != this._processIndex);
+            var itemsWithoutHits = _trackingItems.Values.Where(o => o.ProcessIndex != _processIndex);
             foreach (var item in itemsWithoutHits)
             {
                 item.DecreaseTrackingConfidence();
@@ -93,8 +98,8 @@ namespace Alturos.Yolo
 
         private string GetObjectId()
         {
-            this._nextObjectId++;
-            return $"O{this._nextObjectId:00000}";
+            _nextObjectId++;
+            return $"O{_nextObjectId:00000}";
         }
 
         private double GetSizeDifferencePercentage(YoloTrackingItemExtended item1, YoloItem item2)
@@ -119,15 +124,15 @@ namespace Alturos.Yolo
 
         private double DistancePercentage(Point p1, Point p2)
         {
-            var max = this.Distance(new Point(0, 0), new Point(this._frameWidth, this._frameHeight));
-            var current = this.Distance(p1, p2);
+            var max = Distance(new Point(0, 0), new Point(_frameWidth, _frameHeight));
+            var current = Distance(p1, p2);
 
             return 100.0 * current / max;
         }
 
         private double Distance(Point p1, Point p2)
         {
-            return Math.Sqrt(this.Pow2(p2.X - p1.X) + Pow2(p2.Y - p1.Y));
+            return Math.Sqrt(Pow2(p2.X - p1.X) + Pow2(p2.Y - p1.Y));
         }
 
         private double Pow2(double x)

@@ -1,9 +1,13 @@
-﻿using Alturos.Yolo.Model;
+﻿#region
+
 using System;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Alturos.Yolo.Model;
+
+#endregion
 
 namespace Alturos.Yolo
 {
@@ -13,7 +17,7 @@ namespace Alturos.Yolo
 
         public YoloPreTrainedDatasetRepository()
         {
-            this._preTrainedDatas = new YoloPreTrainedData[]
+            _preTrainedDatas = new[]
             {
                 new YoloPreTrainedData
                 {
@@ -48,7 +52,7 @@ namespace Alturos.Yolo
 
         public async Task<string[]> GetDatasetsAsync()
         {
-            var names = this._preTrainedDatas.Select(o => o.Name).ToArray();
+            var names = _preTrainedDatas.Select(o => o.Name).ToArray();
             return await Task.FromResult(names);
         }
 
@@ -56,23 +60,24 @@ namespace Alturos.Yolo
         {
             Directory.CreateDirectory(destinationPath);
 
-            var preTrainedData = this._preTrainedDatas.Where(o => o.Name.Equals(name, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+            var preTrainedData = _preTrainedDatas.Where(o => o.Name.Equals(name, StringComparison.OrdinalIgnoreCase))
+                .FirstOrDefault();
             if (preTrainedData == null)
             {
                 return false;
             }
 
-            if (!await this.DownloadAsync(preTrainedData.ConfigFileUrl, destinationPath).ConfigureAwait(false))
+            if (!await DownloadAsync(preTrainedData.ConfigFileUrl, destinationPath).ConfigureAwait(false))
             {
                 return false;
             }
 
-            if (!await this.DownloadAsync(preTrainedData.NamesFileUrl, destinationPath).ConfigureAwait(false))
+            if (!await DownloadAsync(preTrainedData.NamesFileUrl, destinationPath).ConfigureAwait(false))
             {
                 return false;
             }
 
-            if (!await this.DownloadAsync(preTrainedData.WeightsFileUrl, destinationPath).ConfigureAwait(false))
+            if (!await DownloadAsync(preTrainedData.WeightsFileUrl, destinationPath).ConfigureAwait(false))
             {
                 return false;
             }
@@ -81,7 +86,7 @@ namespace Alturos.Yolo
             {
                 foreach (var optionalFile in preTrainedData.OptionalFileUrls)
                 {
-                    if (!await this.DownloadAsync(optionalFile, destinationPath).ConfigureAwait(false))
+                    if (!await DownloadAsync(optionalFile, destinationPath).ConfigureAwait(false))
                     {
                         return false;
                     }
@@ -101,7 +106,8 @@ namespace Alturos.Yolo
             {
                 httpClient.Timeout = TimeSpan.FromMinutes(30);
 
-                using (var httpResponseMessage = await httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false))
+                using (var httpResponseMessage =
+                    await httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false))
                 {
                     if (!httpResponseMessage.IsSuccessStatusCode)
                     {
@@ -115,14 +121,13 @@ namespace Alturos.Yolo
                         {
                             return true;
                         }
-                        else
-                        {
-                            File.Delete(filePath);
-                        }
+
+                        File.Delete(filePath);
                     }
 
                     var fileContentStream = await httpResponseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false);
-                    using (var sourceStream = new FileStream(filePath, FileMode.CreateNew, FileAccess.Write, FileShare.None, bufferSize: 4096, useAsync: true))
+                    using (var sourceStream = new FileStream(filePath, FileMode.CreateNew, FileAccess.Write,
+                        FileShare.None, 4096, true))
                     {
                         await fileContentStream.CopyToAsync(sourceStream).ConfigureAwait(false);
                     }

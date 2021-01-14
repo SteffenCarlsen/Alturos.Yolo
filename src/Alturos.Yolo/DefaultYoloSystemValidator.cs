@@ -1,9 +1,12 @@
-﻿using Alturos.Yolo.Model;
+﻿#region
+
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.InteropServices;
+using Alturos.Yolo.Model;
 using Microsoft.Win32;
+
+#endregion
 
 namespace Alturos.Yolo
 {
@@ -14,7 +17,6 @@ namespace Alturos.Yolo
             var report = new SystemValidationReport();
 
 #if NETSTANDARD
-
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 report.MicrosoftVisualCPlusPlusRedistributableExists = this.IsMicrosoftVisualCPlusPlus2017Available();
@@ -40,6 +42,7 @@ namespace Alturos.Yolo
             {
                 report.CudaExists = true;
             }
+
             if (envirormentVariables.Contains("CUDA_PATH_V10_2"))
             {
                 report.CudaExists = true;
@@ -54,16 +57,43 @@ namespace Alturos.Yolo
             //https://stackoverflow.com/questions/12206314/detect-if-visual-c-redistributable-for-visual-studio-2012-is-installed/
             var checkKeys = new Dictionary<string, string>
             {
-                { @"Installer\Dependencies\,,amd64,14.0,bundle", "Microsoft Visual C++ 2017 Redistributable (x64)" },
-                { @"Installer\Dependencies\VC,redist.x64,amd64,14.16,bundle", "Microsoft Visual C++ 2017 Redistributable (x64)" },
-                { @"Installer\Dependencies\VC,redist.x64,amd64,14.20,bundle", "Microsoft Visual C++ 2015-2019 Redistributable (x64)" },
-                { @"Installer\Dependencies\VC,redist.x64,amd64,14.21,bundle", "Microsoft Visual C++ 2015-2019 Redistributable (x64)" },
-                { @"Installer\Dependencies\VC,redist.x64,amd64,14.22,bundle", "Microsoft Visual C++ 2015-2019 Redistributable (x64)" },
-                { @"Installer\Dependencies\VC,redist.x64,amd64,14.23,bundle", "Microsoft Visual C++ 2015-2019 Redistributable (x64)" },
-                { @"Installer\Dependencies\VC,redist.x64,amd64,14.24,bundle", "Microsoft Visual C++ 2015-2019 Redistributable (x64)" },
-                { @"Installer\Dependencies\VC,redist.x64,amd64,14.25,bundle", "Microsoft Visual C++ 2015-2019 Redistributable (x64)" },
-                { @"Installer\Dependencies\VC,redist.x64,amd64,14.26,bundle", "Microsoft Visual C++ 2015-2019 Redistributable (x64)" },
-                { @"Installer\Dependencies\VC,redist.x64,amd64,14.27,bundle", "Microsoft Visual C++ 2015-2019 Redistributable (x64)" }
+                {@"Installer\Dependencies\,,amd64,14.0,bundle", "Microsoft Visual C++ 2017 Redistributable (x64)"},
+                {
+                    @"Installer\Dependencies\VC,redist.x64,amd64,14.16,bundle",
+                    "Microsoft Visual C++ 2017 Redistributable (x64)"
+                },
+                {
+                    @"Installer\Dependencies\VC,redist.x64,amd64,14.20,bundle",
+                    "Microsoft Visual C++ 2015-2019 Redistributable (x64)"
+                },
+                {
+                    @"Installer\Dependencies\VC,redist.x64,amd64,14.21,bundle",
+                    "Microsoft Visual C++ 2015-2019 Redistributable (x64)"
+                },
+                {
+                    @"Installer\Dependencies\VC,redist.x64,amd64,14.22,bundle",
+                    "Microsoft Visual C++ 2015-2019 Redistributable (x64)"
+                },
+                {
+                    @"Installer\Dependencies\VC,redist.x64,amd64,14.23,bundle",
+                    "Microsoft Visual C++ 2015-2019 Redistributable (x64)"
+                },
+                {
+                    @"Installer\Dependencies\VC,redist.x64,amd64,14.24,bundle",
+                    "Microsoft Visual C++ 2015-2019 Redistributable (x64)"
+                },
+                {
+                    @"Installer\Dependencies\VC,redist.x64,amd64,14.25,bundle",
+                    "Microsoft Visual C++ 2015-2019 Redistributable (x64)"
+                },
+                {
+                    @"Installer\Dependencies\VC,redist.x64,amd64,14.26,bundle",
+                    "Microsoft Visual C++ 2015-2019 Redistributable (x64)"
+                },
+                {
+                    @"Installer\Dependencies\VC,redist.x64,amd64,14.27,bundle",
+                    "Microsoft Visual C++ 2015-2019 Redistributable (x64)"
+                }
             };
 
             foreach (var checkKey in checkKeys)

@@ -1,9 +1,13 @@
-﻿using System.Runtime.InteropServices;
+﻿#region
+
+using System.Runtime.InteropServices;
+
+#endregion
 
 namespace Alturos.Yolo.Model
 {
     /// <summary>
-    /// C++ Communication object
+    ///     C++ Communication object
     /// </summary>
     [StructLayout(LayoutKind.Sequential)]
     internal struct BboxContainer

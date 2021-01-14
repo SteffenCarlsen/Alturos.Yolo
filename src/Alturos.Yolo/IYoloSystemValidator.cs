@@ -1,4 +1,8 @@
-﻿using Alturos.Yolo.Model;
+﻿#region
+
+using Alturos.Yolo.Model;
+
+#endregion
 
 namespace Alturos.Yolo
 {

@@ -1,33 +1,39 @@
-﻿using System.IO;
+﻿#region
+
+using System.IO;
 using System.Linq;
+
+#endregion
 
 namespace Alturos.Yolo
 {
     public class YoloConfigurationDetector
     {
         /// <summary>
-        /// Automatict detect the yolo configuration on the given path
+        ///     Automatict detect the yolo configuration on the given path
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
         /// <exception cref="FileNotFoundException">Thrown when cannot found one of the required yolo files</exception>
         public YoloConfiguration Detect(string path = ".")
         {
-            var files = this.GetYoloFiles(path);
-            var yoloConfiguration = this.MapFiles(files);
-            var configValid = this.AreValidYoloFiles(yoloConfiguration);
+            var files = GetYoloFiles(path);
+            var yoloConfiguration = MapFiles(files);
+            var configValid = AreValidYoloFiles(yoloConfiguration);
 
             if (configValid)
             {
                 return yoloConfiguration;
             }
 
-            throw new FileNotFoundException("Cannot found pre-trained model, check all config files available (.cfg, .weights, .names)");
+            throw new FileNotFoundException(
+                "Cannot found pre-trained model, check all config files available (.cfg, .weights, .names)");
         }
 
         private string[] GetYoloFiles(string path)
         {
-            return Directory.GetFiles(path, "*.*", SearchOption.TopDirectoryOnly).Where(o => o.EndsWith(".names") || o.EndsWith(".cfg") || o.EndsWith(".weights")).ToArray();
+            return Directory.GetFiles(path, "*.*", SearchOption.TopDirectoryOnly)
+                .Where(o => o.EndsWith(".names") || o.EndsWith(".cfg") || o.EndsWith(".weights")).ToArray();
         }
 
         private YoloConfiguration MapFiles(string[] files)

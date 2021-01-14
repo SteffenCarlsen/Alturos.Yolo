@@ -1,7 +1,11 @@
-﻿using System.Drawing;
+﻿#region
+
+using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
+
+#endregion
 
 namespace Alturos.Yolo
 {
@@ -9,15 +13,15 @@ namespace Alturos.Yolo
     {
         public byte[] Resize(byte[] imageData, int width, int height)
         {
-            using (var image = this.Byte2Image(imageData))
-            using (var resizedImage = this.ResizeImage(image, width, height))
+            using (var image = Byte2Image(imageData))
+            using (var resizedImage = ResizeImage(image, width, height))
             {
-                return this.Image2Byte(resizedImage);
+                return Image2Byte(resizedImage);
             }
         }
 
         /// <summary>
-        /// Resize the image to the specified width and height.
+        ///     Resize the image to the specified width and height.
         /// </summary>
         /// <param name="image">The image to resize.</param>
         /// <param name="width">The width to resize to.</param>
