@@ -1,9 +1,9 @@
 ﻿using Alturos.Yolo.Model;
-using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
+using Microsoft.Win32;
 
 namespace Alturos.Yolo
 {

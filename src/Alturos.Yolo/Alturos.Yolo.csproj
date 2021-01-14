@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
     <Description>Yolo Darknet Wrapper, Real-Time Object Detection (yolo core of AlexeyAB/darknet), CUDA 10.1</Description>
     <Authors>Alturos Destinations</Authors>
     <Company>Alturos DestinationsAlturos Destinations</Company>
@@ -16,13 +15,10 @@
     <Version>3.0.6-alpha</Version>
     <AssemblyVersion>3.0.6</AssemblyVersion>
     <FileVersion>3.0.6</FileVersion>
+    <TargetFramework>netcoreapp5.0</TargetFramework>
   </PropertyGroup>
 
   <!-- Only for .netstandard 2.0 -->
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-    <PackageReference Include="Microsoft.Win32.Registry" Version="4.7.0" />
-    <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
-  </ItemGroup>
 
   <!-- Only for .net4-->
   <ItemGroup Condition="$(TargetFramework.StartsWith('net4'))">
@@ -117,6 +113,11 @@
       <Visible>false</Visible>
       <PackagePath></PackagePath>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
+    <PackageReference Include="System.Drawing.Common" Version="5.0.0" />
   </ItemGroup>
 
 </Project>
